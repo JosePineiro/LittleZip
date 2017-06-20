@@ -79,10 +79,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\libdeflate_x64.dll">
+    <Content Include="libdeflate_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\libdeflate_x86.dll">
+    <Content Include="libdeflate_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
