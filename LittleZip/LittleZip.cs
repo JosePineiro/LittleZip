@@ -277,6 +277,7 @@ namespace System.IO.Compression
 
                 // Deflate the Source and get ZipFileEntry data
                 Libdeflate.Deflate(inBuffer, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
+                //LibZopfli.Deflate(inBuffer, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
 
                 // If not reduced the size, use the original data.
                 if (zfe.FileSize <= zfe.CompressedSize)
@@ -290,7 +291,7 @@ namespace System.IO.Compression
                 {
                     if (blocked == null)
                         blocked = filenameInZip;
-                    Thread.Sleep(10);
+                    Thread.Sleep(5);
                     Application.DoEvents();
                 }
 
@@ -578,9 +579,11 @@ namespace System.IO.Compression
     {
         public static void Deflate(byte[] inBuffer, out byte[] outBuffer, out uint compresedSize, out uint crc32)
         {
+            IntPtr ptrInBuffer = IntPtr.Zero;
+            IntPtr ptrOutBuffer = IntPtr.Zero;
             try
             {
-                IntPtr ptrInBuffer = Marshal.AllocHGlobal(inBuffer.Length);
+                ptrInBuffer = Marshal.AllocHGlobal(inBuffer.Length);
                 Marshal.Copy(inBuffer, 0, ptrInBuffer, inBuffer.Length);
 
                 crc32 = UnsafeNativeMethods.LibdeflateCrc32(0, ptrInBuffer, inBuffer.Length);
@@ -591,16 +594,20 @@ namespace System.IO.Compression
 
                 int maxCompresedSize = UnsafeNativeMethods.LibdeflateDeflateCompressBound(compressor, inBuffer.Length);
                 outBuffer = new byte[(int)(maxCompresedSize)];
-                IntPtr ptrOutBuffer = Marshal.AllocHGlobal(maxCompresedSize);
+                ptrOutBuffer = Marshal.AllocHGlobal(maxCompresedSize);
 
                 compresedSize = (uint)UnsafeNativeMethods.LibdeflateDeflateCompress(compressor, ptrInBuffer, inBuffer.Length, ptrOutBuffer, (int)maxCompresedSize);
                 UnsafeNativeMethods.LibdeflateFreeCompressor(compressor);
                 outBuffer = new byte[compresedSize];
                 Marshal.Copy(ptrOutBuffer, outBuffer, 0, (int)compresedSize);
+            }
+            catch (Exception ex) { throw new Exception(ex.Message + "\r\nIn Libdeflate.Deflate"); }
+            finally 
+            {
+                // Free unmanaged memory
                 Marshal.FreeHGlobal(ptrInBuffer);
                 Marshal.FreeHGlobal(ptrOutBuffer);
             }
-            catch (Exception ex) { throw new Exception(ex.Message + "\r\nIn Libdeflate.Deflate"); }
         }
     }
 

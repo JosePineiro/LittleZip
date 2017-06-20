@@ -1,0 +1,10 @@
+D:\FuentesC#\LittleZip\LittleZip\obj\Debug\LittleZipTest.csprojResolveAssemblyReference.cache
+D:\FuentesC#\LittleZip\LittleZip\obj\Debug\LittleZipTest.LittleZipTest.resources
+D:\FuentesC#\LittleZip\LittleZip\obj\Debug\LittleZipTest.Properties.Resources.resources
+D:\FuentesC#\LittleZip\LittleZip\obj\Debug\LittleZipTest.csproj.GenerateResource.Cache
+D:\FuentesC#\LittleZip\LittleZip\bin\Debug\LittleZipTest.exe
+D:\FuentesC#\LittleZip\LittleZip\bin\Debug\LittleZipTest.pdb
+D:\FuentesC#\LittleZip\LittleZip\obj\Debug\LittleZipTest.exe
+D:\FuentesC#\LittleZip\LittleZip\obj\Debug\LittleZipTest.pdb
+D:\FuentesC#\LittleZip\LittleZip\bin\Debug\libdeflate_x64.dll
+D:\FuentesC#\LittleZip\LittleZip\bin\Debug\libdeflate_x86.dll

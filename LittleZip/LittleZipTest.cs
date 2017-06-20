@@ -92,13 +92,13 @@ namespace LittleZipTest
                 //ZIP file not exist. Create one and store the files
                 using (LittleZip zip = LittleZip.Create(this.textBoxZipFile.Text))
                 {
-                    clsParallel.For(0, files.Length, delegate(int f)
-                    //for (int f = 0; f < files.Length; f++)
+                    //clsParallel.For(0, files.Length, delegate(int f)
+                    for (int f = 0; f < files.Length; f++)
                     {
                         zip.AddFile(files[f], files[f].Substring(this.textBoxSouce.Text.Length), "");
                         this.progressBar.Value++;
                         Application.DoEvents();
-                    });
+                    } //);
                 }
             }
 
