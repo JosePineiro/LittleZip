@@ -277,7 +277,6 @@ namespace System.IO.Compression
 
                 // Deflate the Source and get ZipFileEntry data
                 Libdeflate.Deflate(inBuffer, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
-                //LibZopfli.Deflate(inBuffer, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
 
                 // If not reduced the size, use the original data.
                 if (zfe.FileSize <= zfe.CompressedSize)
