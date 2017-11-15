@@ -276,8 +276,7 @@ namespace System.IO.Compression
                     zfe.Method = Compression.Store;
                 else
                     Libdeflate.Deflate(inBuffer, compressionLevel, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
-                //LibZopfli.Deflate(inBuffer, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
-
+                    
                 // If not reduced the size, use the original data.
                 if (zfe.CompressedSize == 0)
                 {
