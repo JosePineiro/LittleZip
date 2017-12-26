@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Diagnostics;
+﻿using ClsParallel;
+using System;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
-using System.Runtime.InteropServices;
-using ClsParallel;
+using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace LittleZipTest
 {
@@ -28,6 +20,19 @@ namespace LittleZipTest
             CheckForIllegalCrossThreadCalls = false;
         }
 
+        private void LittleZipTest_Load(object sender, EventArgs e)
+        {
+            // Handle command line arguments
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length == 3)
+            {
+                this.textBoxSource.Text = args[1];
+                this.textBoxZipFile.Text = args[2];
+                buttonZIP_Click(null, null);
+                System.Windows.Forms.Application.Exit();
+            }
+        }
+
         /// <summary>Select the source directory</summary>
         private void buttonSource_Click(object sender, EventArgs e)
         {
@@ -35,11 +40,11 @@ namespace LittleZipTest
             {
                 using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
                 {
-                    if (Directory.Exists(this.textBoxSouce.Text))
-                        folderBrowserDialog.SelectedPath = this.textBoxSouce.Text;
+                    if (Directory.Exists(this.textBoxSource.Text))
+                        folderBrowserDialog.SelectedPath = this.textBoxSource.Text;
                     if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                     {
-                        this.textBoxSouce.Text = folderBrowserDialog.SelectedPath;
+                        this.textBoxSource.Text = folderBrowserDialog.SelectedPath;
                         this.textBoxZipFile.Text = folderBrowserDialog.SelectedPath + ".zip";
                     }
                 }
@@ -70,39 +75,29 @@ namespace LittleZipTest
         private void buttonZIP_Click(object sender, System.EventArgs e)
         {
             //Get the files in dir
-            string[] files = Directory.GetFiles(this.textBoxSouce.Text, "*.*", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(this.textBoxSource.Text, "*.*", SearchOption.AllDirectories);
             this.progressBar.Maximum = files.Length;
 
-            if (File.Exists(this.textBoxZipFile.Text))
+            Stopwatch sw = new Stopwatch();
+
+            sw.Start();
+
+            //ZIP all files
+            using (LittleZip zip = new LittleZip(this.textBoxZipFile.Text))
             {
-                //ZIP file exist append the files
-                using (LittleZip zip = LittleZip.Open(this.textBoxZipFile.Text))
+                clsParallel.For(0, files.Length, delegate(int f)
+                //for (int f = 0; f < files.Length; f++)
                 {
-                    clsParallel.For(0, files.Length, delegate(int f)
-                    //for (int f = 0; f < files.Length; f++)
-                    {
-                        zip.AddFile(files[f], files[f].Substring(this.textBoxSouce.Text.Length), "");
-                        this.progressBar.Value++;
-                        Application.DoEvents();
-                    });
-                }
+                    zip.AddFile(files[f], files[f].Substring(this.textBoxSource.Text.Length), 13, "");
+                    this.progressBar.Value++;
+                    Application.DoEvents();
+                } );
             }
-            else
-            {
-                //ZIP file not exist. Create one and store the files
-                using (LittleZip zip = LittleZip.Create(this.textBoxZipFile.Text))
-                {
-                    //clsParallel.For(0, files.Length, delegate(int f)
-                    for (int f = 0; f < files.Length; f++)
-                    {
-                        zip.AddFile(files[f], files[f].Substring(this.textBoxSouce.Text.Length), "");
-                        this.progressBar.Value++;
-                        Application.DoEvents();
-                    } //);
-                }
-            }
+            sw.Stop();
+            MessageBox.Show("Elapsed=" + sw.Elapsed);
 
             this.progressBar.Value = 0;
         }
     }
 }
+

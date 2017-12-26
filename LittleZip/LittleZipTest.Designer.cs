@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBoxSouce = new System.Windows.Forms.TextBox();
+            this.textBoxSource = new System.Windows.Forms.TextBox();
             this.buttonSouce = new System.Windows.Forms.Button();
             this.textBoxZipFile = new System.Windows.Forms.TextBox();
             this.buttonZipFile = new System.Windows.Forms.Button();
@@ -36,24 +36,26 @@
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
-            // textBoxSouce
+            // textBoxSource
             // 
-            this.textBoxSouce.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSouce.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxSouce.Location = new System.Drawing.Point(12, 12);
-            this.textBoxSouce.Name = "textBoxSouce";
-            this.textBoxSouce.Size = new System.Drawing.Size(539, 22);
-            this.textBoxSouce.TabIndex = 8;
-            this.textBoxSouce.Text = "Souce";
+            this.textBoxSource.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxSource.Location = new System.Drawing.Point(18, 18);
+            this.textBoxSource.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxSource.Name = "textBoxSource";
+            this.textBoxSource.Size = new System.Drawing.Size(806, 30);
+            this.textBoxSource.TabIndex = 8;
+            this.textBoxSource.Text = "Souce";
             // 
             // buttonSouce
             // 
             this.buttonSouce.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSouce.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonSouce.Location = new System.Drawing.Point(557, 10);
+            this.buttonSouce.Location = new System.Drawing.Point(836, 15);
+            this.buttonSouce.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonSouce.Name = "buttonSouce";
-            this.buttonSouce.Size = new System.Drawing.Size(46, 27);
+            this.buttonSouce.Size = new System.Drawing.Size(69, 42);
             this.buttonSouce.TabIndex = 7;
             this.buttonSouce.Text = ". . .";
             this.buttonSouce.UseVisualStyleBackColor = true;
@@ -64,9 +66,10 @@
             this.textBoxZipFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxZipFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxZipFile.Location = new System.Drawing.Point(12, 45);
+            this.textBoxZipFile.Location = new System.Drawing.Point(18, 69);
+            this.textBoxZipFile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxZipFile.Name = "textBoxZipFile";
-            this.textBoxZipFile.Size = new System.Drawing.Size(539, 22);
+            this.textBoxZipFile.Size = new System.Drawing.Size(806, 30);
             this.textBoxZipFile.TabIndex = 10;
             this.textBoxZipFile.Text = "ZipFile";
             // 
@@ -74,9 +77,10 @@
             // 
             this.buttonZipFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonZipFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonZipFile.Location = new System.Drawing.Point(557, 43);
+            this.buttonZipFile.Location = new System.Drawing.Point(836, 66);
+            this.buttonZipFile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonZipFile.Name = "buttonZipFile";
-            this.buttonZipFile.Size = new System.Drawing.Size(46, 27);
+            this.buttonZipFile.Size = new System.Drawing.Size(69, 42);
             this.buttonZipFile.TabIndex = 9;
             this.buttonZipFile.Text = ". . .";
             this.buttonZipFile.UseVisualStyleBackColor = true;
@@ -85,9 +89,10 @@
             // buttonZIP
             // 
             this.buttonZIP.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonZIP.Location = new System.Drawing.Point(265, 107);
+            this.buttonZIP.Location = new System.Drawing.Point(398, 165);
+            this.buttonZIP.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonZIP.Name = "buttonZIP";
-            this.buttonZIP.Size = new System.Drawing.Size(75, 30);
+            this.buttonZIP.Size = new System.Drawing.Size(112, 46);
             this.buttonZIP.TabIndex = 11;
             this.buttonZIP.Text = "ZIP";
             this.buttonZIP.UseVisualStyleBackColor = true;
@@ -96,24 +101,27 @@
             // progressBar
             // 
             this.progressBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.progressBar.Location = new System.Drawing.Point(0, 162);
+            this.progressBar.Location = new System.Drawing.Point(0, 250);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(615, 23);
+            this.progressBar.Size = new System.Drawing.Size(922, 35);
             this.progressBar.TabIndex = 12;
             // 
-            // Form1
+            // LittleZipTest
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 185);
+            this.ClientSize = new System.Drawing.Size(922, 285);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.buttonZIP);
             this.Controls.Add(this.textBoxZipFile);
             this.Controls.Add(this.buttonZipFile);
-            this.Controls.Add(this.textBoxSouce);
+            this.Controls.Add(this.textBoxSource);
             this.Controls.Add(this.buttonSouce);
-            this.Name = "Form1";
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Name = "LittleZipTest";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.LittleZipTest_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -121,7 +129,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBoxSouce;
+        private System.Windows.Forms.TextBox textBoxSource;
         private System.Windows.Forms.Button buttonSouce;
         private System.Windows.Forms.TextBox textBoxZipFile;
         private System.Windows.Forms.Button buttonZipFile;
