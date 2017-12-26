@@ -1,7 +1,7 @@
 # LittleZip. A libdeflate-wrapper
-Wrapper for libdeflate in C#. Implement ZIp archive create an apend.
+Wrapper for libdeflate in C#. Implement ZIP archive create an apend.
 
-Exposes libdeflate compress and crc32 API functions.
+Exposes libdeflate compress and CRC32 API functions.
 
 The wapper is in safe managed code in one class. No need external dll except libdeflate_x86.dll and libdeflate_x64.dll (included v0.8). The wrapper work in 32, 64 bit or ANY (auto swith to the apropiate library).
 
@@ -46,3 +46,6 @@ LittleZip can not:
 - Store a large file (> 2.147.483.647 bytes)
 - Use little memory (need two times the compresed file)
 - Decompress one ZIP file, erase files in zip, update files in zip, test files in zip. For this purpose, use http://github.com/jaime-olivares/zipstorer
+
+## Thanks
+- https://github.com/ebiggers/libdeflate
