@@ -45,7 +45,7 @@ LittleZip can not:
 - Create a large zip (> 2.147.483.647 bytes)
 - Store a large file (> 2.147.483.647 bytes)
 - Use little memory (need two times the compresed file)
-- Decompress one ZIP file, erase files in zip, update files in zip, test files in zip. For this purpose, use http://github.com/jaime-olivares/zipstorer
+- Decompress one ZIP file, erase files in zip, update files in zip, test files in zip. For this purpose, use https://github.com/JosePineiro/LittleUnZip
 
 ## Thanks
 - https://github.com/ebiggers/libdeflate
