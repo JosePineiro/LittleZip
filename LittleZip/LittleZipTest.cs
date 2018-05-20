@@ -93,7 +93,7 @@ namespace LittleZipTest
                 clsParallel.For(0, files.Length, delegate(int f)
                 ///for (int f = 0; f < files.Length; f++)
                 {
-                    zip.AddFile(files[f], files[f].Substring(this.textBoxSource.Text.Length), 13, "");
+                    zip.AddFile(files[f], files[f].Substring(this.textBoxSource.Text.Length), 12, "");
                     this.progressBar.Value++;
                     Application.DoEvents();
                 } );
