@@ -33,7 +33,10 @@ Open an existing ZIP stream for append files or, if stream is void, create a new
 ```C#
 LittleZip zip = LittleZip(stream, "Zip comment");
 ```
+## Important note
+Compression levels above 12, use ZOPLI library. It is very slow.
 
+## Purpose
 LittleZip can:
 - Compress several files in a very little zip
 - Compress in very little time
