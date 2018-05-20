@@ -1,9 +1,9 @@
 ﻿using ClsParallel;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace LittleZipTest
 {
@@ -75,6 +75,11 @@ namespace LittleZipTest
         private void buttonZIP_Click(object sender, System.EventArgs e)
         {
             //Get the files in dir
+            if (!Directory.Exists(this.textBoxSource.Text))
+            {
+                MessageBox.Show("Please, select a source path.");
+                return;
+            }
             string[] files = Directory.GetFiles(this.textBoxSource.Text, "*.*", SearchOption.AllDirectories);
             this.progressBar.Maximum = files.Length;
 
@@ -86,7 +91,7 @@ namespace LittleZipTest
             using (LittleZip zip = new LittleZip(this.textBoxZipFile.Text))
             {
                 clsParallel.For(0, files.Length, delegate(int f)
-                //for (int f = 0; f < files.Length; f++)
+                ///for (int f = 0; f < files.Length; f++)
                 {
                     zip.AddFile(files[f], files[f].Substring(this.textBoxSource.Text.Length), 13, "");
                     this.progressBar.Value++;
