@@ -1,24 +1,26 @@
 ﻿/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// LittleZip C#. (GPL) Jose M. Piñeiro
-/// Version: 1.0.0.2 (Dec 26, 2017)
+/// Version: 1.0.0.3 (May 20, 2018)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// 
 /// This file is Test for libdeflate wrapper
-/// LittleZip can:
+/// Little can:
 /// - Compress several files in a very little zip
 /// - Compress in very little time
 /// - Use very little code
 /// - Very little learning for use
-/// - Use Storage and Deflate metods. Another metods are not implemented.
+/// - Use Storage and Deflate methods. Another methods are not implemented.
 /// 
 /// LittleZip can not:
 /// - Create a large zip ( > 2.147.483.647 bytes)
 /// - Store a large file ( > 2.147.483.647 bytes)
-/// - Use little memory ( need two times the compresed file )
+/// - Use little memory ( need two times the compressed file )
 /// - Decompress one ZIP file. Use LittleUnZip program.
 ///
 /// 
 /// Use code from: http://github.com/jaime-olivares/zipstorer
 /// Use library from: https://github.com/ebiggers/libdeflate
+/// Use library from: https://github.com/drivehappy/libzopfli-sharp
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 /// Compress Functions:
 /// LittleZip(string _filename, string _comment)
@@ -27,14 +29,16 @@
 /// LittleZip Create(Stream _stream, string _comment)
 /// - Open an existing ZIP stream for append files. Create a new ZIP stream if not exit. Optionally you can put a general comment.
 /// 
-/// AddFile(string pathFilename, string filenameInZip, string comment)
+/// AddFile(string pathFilename, string filenameInZip, int compressionLevel, string comment)
 /// - Add full contents of a file into the Zip storage. Optionally you can put a file comment.
 /// 
-/// AddBuffer(byte[] inBuffer, string filenameInZip, DateTime modifyTime, string comment = "")
+/// AddBuffer(byte[] inBuffer, string filenameInZip, DateTime modifyTime, int compressionLevel, string comment = "")
 /// - Add full contents of a array into the Zip storage. Optionally you can put a file comment.
 /// 
 /// Close()
 /// - Updates central directory and close the Zip storage. Automatic call in dispose
+/// 
+/// Important note: Compression levels above 12, use ZOPLI library. It is very slow.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System.Collections.Generic;
@@ -259,7 +263,10 @@ namespace System.IO.Compression
                 else
                 {
                     // Deflate the Source and get ZipFileEntry data
-                    UnsafeNativeMethods.Libdeflate(inBuffer, compressionLevel, false, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
+                    if (compressionLevel > 12)
+                        UnsafeNativeMethods.ZopfliDeflate(inBuffer, compressionLevel, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
+                    else
+                        UnsafeNativeMethods.Libdeflate(inBuffer, compressionLevel, false, out outBuffer, out zfe.CompressedSize, out zfe.Crc32);
 
                     // If not reduced the size, use the original data.
                     if (zfe.CompressedSize == 0)
@@ -299,6 +306,7 @@ namespace System.IO.Compression
             }
             catch (Exception ex) { throw new Exception(ex.Message + "\r\nIn LittleZip.AddBuffer"); }
         }
+
 
         /// <summary>
         /// Updates central directory and close the Zip storage
@@ -542,7 +550,7 @@ namespace System.IO.Compression
                 } while (zipFileStream.Position > 0);
                 throw new System.IO.InvalidDataException("Invalid ZIP file");
             }
-            catch (Exception ex) { throw new Exception(ex.Message + "\r\nIn LittleZip.ReadFileInfo"); }
+            catch { throw new System.IO.InvalidDataException("Invalid ZIP file"); }
         }
         #endregion
 
@@ -553,10 +561,12 @@ namespace System.IO.Compression
         public void Dispose()
         {
             this.Close();
+            GC.Collect();
         }
         #endregion
     }
 
+    #region LIBDEFLATE wrapper
     [SuppressUnmanagedCodeSecurityAttribute]
     internal sealed partial class UnsafeNativeMethods
     {
@@ -905,4 +915,165 @@ namespace System.IO.Compression
         [DllImport("libdeflate_x64.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "libdeflate_adler32")]
         private static extern UInt32 libdeflate_adler32_x64(UInt32 crc, IntPtr inBuffer, UIntPtr len);
     }
+    #endregion
+
+    #region ZOPFLI wrapper
+    /// <summary>
+    /// Zopfli Options
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class ZopfliOptions
+    {
+        // Whether to print output
+        public Int32 verbose;
+
+        // Whether to print more detailed output
+        public Int32 verbose_more;
+
+        // Maximum amount of times to rerun forward and backward pass to optimize LZ77
+        // compression cost. Good values: 10, 15 for small files, 5 for files over
+        // several MB in size or it will be too slow.
+        public Int32 numiterations;
+
+        // If true, splits the data in multiple deflate blocks with optimal choice
+        // for the block boundaries. Block splitting gives better compression. Default:
+        // true (1).
+        public Int32 blocksplitting;
+
+        // If true, chooses the optimal block split points only after doing the iterative
+        // LZ77 compression. If false, chooses the block split points first, then does
+        // iterative LZ77 on each individual block. Depending on the file, either first
+        // or last gives the best compression. Default: false (0).
+        public Int32 blocksplittinglast;
+
+        // Maximum amount of blocks to split into (0 for unlimited, but this can give
+        // extreme results that hurt compression on some files). Default value: 15.
+        public Int32 blocksplittingmax;
+
+        /// <summary>
+        /// Initializes options used throughout the program with default values.
+        /// </summary>
+        public ZopfliOptions()
+        {
+            verbose = 0;
+            verbose_more = 0;
+            numiterations = 15;
+            blocksplitting = 1;
+            blocksplittinglast = 0;
+            blocksplittingmax = 15;
+        }
+    }
+
+    /// <summary>
+    /// Zopfli format options
+    /// </summary>
+    public enum ZopfliFormat
+    {
+        ZOPFLI_FORMAT_GZIP,
+        ZOPFLI_FORMAT_ZLIB,
+        ZOPFLI_FORMAT_DEFLATE
+    };
+
+    [SuppressUnmanagedCodeSecurityAttribute]
+    internal sealed partial class UnsafeNativeMethods
+    {
+        /// <summary>
+        /// Deflate array with Zopfli
+        /// </summary>
+        /// <param name="inBuffer">Data to deflate</param>
+        /// <param name="compressionLevel">Maximum amount of times to rerun forward and backward pass to optimize LZ77 (high = more compression and more slow)</param>
+        /// <param name="outBuffer">Data deflated</param>
+        /// <param name="deflatedSize">Size of deflated data</param>
+        /// <param name="crc32">CRC of deflated data</param>
+        public static void ZopfliDeflate(byte[] inBuffer, int compressionLevel, out byte[] outBuffer, out uint deflatedSize, out uint crc32)
+        {
+            ZopfliFormat type = ZopfliFormat.ZOPFLI_FORMAT_DEFLATE;
+            ZopfliOptions options = new ZopfliOptions();
+            IntPtr result = IntPtr.Zero;
+            UIntPtr resultSize = UIntPtr.Zero;
+
+            try
+            {
+                //Get CRC32
+                crc32 = GetCrc32(inBuffer);
+
+                // Compress the data via native methods
+                options.numiterations = compressionLevel-5;
+                ZopfliCompress(options, type, inBuffer, inBuffer.Length, ref result, ref resultSize);
+
+                // if compresed size is less that uncompresed size, copy data back to managed memory and return
+                if ((int)resultSize < inBuffer.Length)
+                {
+                    deflatedSize = (uint)resultSize;
+                    outBuffer = new byte[deflatedSize];
+                    Marshal.Copy(result, outBuffer, 0, (int)deflatedSize);
+                }
+                else
+                {
+                    deflatedSize = 0;
+                    outBuffer = null;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                // Free unmanaged memory
+                ZopfliFree(result);
+            }
+        }
+
+        /// <summary>
+        /// Internal convert method to convert byte array to compressed byte array
+        /// </summary>
+        /// <param name="options">Compression options</param>
+        /// <param name="type">Format type, DEFLATE, GZIP, ZLIB</param>
+        /// <param name="inBuffer">Uncompressed data array</param>
+        /// 
+        public static void ZopfliCompress(ZopfliOptions options, ZopfliFormat output_type, byte[] inBuffer, int dataInSize, ref IntPtr dataOut, ref UIntPtr dataOutSize)
+        {
+            switch (IntPtr.Size)
+            {
+                case 4:
+                    zopfli_x86(options, output_type, inBuffer, dataInSize, ref dataOut, ref dataOutSize);
+                    break;
+                case 8:
+                    zopfli_x64(options, output_type, inBuffer, dataInSize, ref dataOut, ref dataOutSize);
+                    break;
+                default:
+                    throw new InvalidOperationException("Invalid platform. Can not find proper function");
+            }
+        }
+        [DllImport("zopfli_x86.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ZopfliCompress")]
+        private static extern void zopfli_x86(ZopfliOptions options, ZopfliFormat output_type, byte[] inBuffer, int dataInSize, ref IntPtr dataOut, ref UIntPtr dataOutSize);
+        [DllImport("zopfli_x64.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ZopfliCompress")]
+        private static extern void zopfli_x64(ZopfliOptions options, ZopfliFormat output_type, byte[] inBuffer, int dataInSize, ref IntPtr dataOut, ref UIntPtr dataOutSize);
+
+
+        /// <summary>
+        /// Frees memory allocated by the native Zopfli library.
+        /// </summary>
+        /// <param name="mem">Pointer to the unmanaged memory to free</param>
+        private static void ZopfliFree(IntPtr mem)
+        {
+            switch (IntPtr.Size)
+            {
+                case 4:
+                    ZopfliFree_x86(mem);
+                    break;
+                case 8:
+                    ZopfliFree_x64(mem);
+                    break;
+                default:
+                    throw new InvalidOperationException("Invalid platform. Can not find proper function");
+            }
+        }
+        [DllImport("zopfli_x86.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ZopfliFree")]
+        private static extern void ZopfliFree_x86(IntPtr mem);
+        [DllImport("zopfli_x64.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ZopfliFree")]
+        private static extern void ZopfliFree_x64(IntPtr mem);
+    }
+    #endregion
 }
