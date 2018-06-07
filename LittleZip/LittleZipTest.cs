@@ -26,8 +26,8 @@ namespace LittleZipTest
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length == 3)
             {
-                this.textBoxSource.Text = args[1];
-                this.textBoxZipFile.Text = args[2];
+                this.textBoxZipFile.Text = args[1];
+                this.textBoxSource.Text = args[2];
                 buttonZIP_Click(null, null);
                 System.Windows.Forms.Application.Exit();
             }
