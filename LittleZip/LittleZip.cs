@@ -307,7 +307,6 @@ namespace System.IO.Compression
             catch (Exception ex) { throw new Exception(ex.Message + "\r\nIn LittleZip.AddBuffer"); }
         }
 
-
         /// <summary>
         /// Updates central directory and close the Zip storage
         /// </summary>
@@ -560,7 +559,7 @@ namespace System.IO.Compression
         /// </summary>
         public void Dispose()
         {
-            this.Close();
+            Close();
             GC.Collect();
         }
         #endregion
